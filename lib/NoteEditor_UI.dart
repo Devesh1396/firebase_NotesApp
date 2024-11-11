@@ -1,3 +1,4 @@
+import 'package:firebase_notesapp/session_service.dart';
 import 'package:flutter/material.dart';
 import 'datamodel.dart';
 import 'fb_service.dart';
@@ -40,9 +41,11 @@ class _NoteEditorState extends State<NoteEditor> {
     String description = descriptionController.text;
 
     if (title.isNotEmpty && description.isNotEmpty) {
+      final userId = await SessionManager().getUid() ?? '';
       if (widget.isEdit) {
         final updatedNote = Note(
           id: widget.noteId,
+          userId: userId,
           title: title,
           content: description,
           timestamp: DateTime.now(),
@@ -50,6 +53,7 @@ class _NoteEditorState extends State<NoteEditor> {
         await _firestoreService.updateNote(updatedNote);
       } else {
         final newNote = Note(
+          userId: userId,
           title: title,
           content: description,
           timestamp: DateTime.now(),
